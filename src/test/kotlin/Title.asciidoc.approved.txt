@@ -1,0 +1,3 @@
+[#id]
+= Some title
+:attr1: attr1 value

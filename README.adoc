@@ -1,0 +1,11 @@
+= DocOps at https://flowconf.ru/[Flow 2022]
+
+This repository follows round table "DocOps for analyst" held at https://flowconf.ru/[Flow 2022].
+
+It defines Kotlin DSL Asciidoc wrapper and contains a report on DocOps articles at Flow written with the help of this wrapper. The report is published at https://habr.com/[Habr]
+
+.Some notes
+* Wrapper allows to create Asciidoc files and Habr MarkDown files for publishing at Habr
+* Only a subset of Asciidoc directives necessary for the Habr post is implemented
+* Applying language tools during abstract syntax tree construction and throwing exception is a quick way to navigate to the source of grammar error via stack trace
+* MS Word and pdf outputs are created with the help of https://github.com/CourseOrchestra/asciidoctor-open-document[Open Document converter for Asciidoctor]
