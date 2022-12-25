@@ -1,6 +1,5 @@
 build
 output
 .gradle
-gradle
 *#
 todo.adoc
