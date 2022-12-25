@@ -1,3 +1,3 @@
 
-rootProject.name = "simple-markup-wrapper"
+rootProject.name = "flow-2022-docops"
 
