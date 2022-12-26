@@ -12,7 +12,7 @@ It defines Kotlin DSL Asciidoc wrapper and contains a report on DocOps talks at 
 * https://fiddlededee.github.io/flow-2022-docops/flow-docops.txt[Just text]
 
 .Some notes
-* Wrapper allows to create Asciidoc files and Habr MarkDown files for publishing at Habr
+* Wrapper allows creating Asciidoc files and Habr MarkDown files for publishing at Habr
 * Only a subset of Asciidoc directives necessary for the Habr post is implemented
 * Applying https://languagetool.org/[Language Tools] during abstract syntax tree construction and throwing exception in the case of grammar error is a quick way to navigate to the source of error via stack trace
 * Plus sign (+) in text doesn't mean string concatenation. It is an overloaded operator that adds inline fragment to paragraph object
