@@ -94,11 +94,13 @@ fun main() {
             lp { + "Возможности DocOps достаточно широки, чтобы эффективно решать практически любые проблемы документирования, стоящие перед аналитиками." }
         }
 
-        p { + "P.S. По горячим следам попробовал сделать " + link("обёртку Kotlin DSL для Asciidoc и эту заметку написать в ней", "https://github.com/fiddlededee/flow-2022-docops") + ". Конечно, писать не настолько удобно, как в Markdown, reStructuredText или Asciidoc. Однако тестировать текст, автоматизировать рутинные операции, создавать собственные элементы языка можно непосредственно внутри проекта, используя привычные инструменты работы с языком Kotlin. Выгрузка в формате Markdown Habr для публикации тоже получилась очень удобной." }
+        p { + "P.S. По горячим следам попробовал сделать " + link("обёртку Kotlin DSL для Asciidoc и эту заметку написать в ней", "https://github.com/fiddlededee/flow-2022-docops") + ". Конечно, писать " + link("менее удобно", "https://github.com/fiddlededee/flow-2022-docops/blob/main/src/main/kotlin/Main.kt") + " чем в Markdown, reStructuredText или Asciidoc. Однако тестировать текст, автоматизировать рутинные операции, создавать собственные элементы языка можно непосредственно внутри проекта, используя привычные инструменты работы с языком Kotlin. Выгрузка в формате Habr Markdown для публикации тоже получилась очень удобной." }
 
     }
+
     Files.createDirectories(Paths.get("output"))
     File("output/flow-docops.md").writeText(doc.toHabrMd())
     File("output/flow-docops.adoc").writeText(doc.toString())
     File("output/flow-docops.txt").writeText(doc.toText())
+
 }

@@ -14,5 +14,7 @@ It defines Kotlin DSL Asciidoc wrapper and contains a report on DocOps talks at 
 .Some notes
 * Wrapper allows to create Asciidoc files and Habr MarkDown files for publishing at Habr
 * Only a subset of Asciidoc directives necessary for the Habr post is implemented
-* Applying language tools during abstract syntax tree construction and throwing exception in the case of grammar error is a quick way to navigate to the source of error via stack trace
+* Applying https://languagetool.org/[Language Tools] during abstract syntax tree construction and throwing exception in the case of grammar error is a quick way to navigate to the source of error via stack trace
+* Plus sign (+) in text doesn't mean string concatenation. It is an overloaded operator that adds inline fragment to paragraph object
+* To check whether inline text is really inline text and doesn't contain any Asciidoc inline or even block macros, https://docs.asciidoctor.org/asciidoctorj/latest/[AsciidoctorJ](Java Bindings for Asciidoctor) is used
 * MS Word and pdf outputs are created with the help of https://github.com/CourseOrchestra/asciidoctor-open-document[Open Document converter for Asciidoctor]
