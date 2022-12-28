@@ -79,7 +79,7 @@ object XPFactory {
     }
 }
 
-open class AdocDSLInline(val string: String) : Comparable<AdocDSLInline> {
+open class AdocDSLInline(val text: String) : Comparable<AdocDSLInline> {
     init {
         this.checkValid()
     }
@@ -88,11 +88,11 @@ open class AdocDSLInline(val string: String) : Comparable<AdocDSLInline> {
     }
 
     override fun compareTo(other: AdocDSLInline): Int {
-        return if (this.string > other.string) 1 else - 1
+        return if (this.text > other.text) 1 else - 1
     }
 
     override fun toString(): String {
-        return string
+        return text
     }
 
     open fun toHabrMd(): String {
@@ -107,8 +107,8 @@ open class AdocDSLInline(val string: String) : Comparable<AdocDSLInline> {
 class IdString(string: String) : AdocDSLInline(string) {
     override fun checkValid() {
         val pattern = "[a-zA-Zа-яА-Я_][a-zA-Z-аяА-Я0-9_-]*"
-        if (! (Regex(pattern) matches string)) {
-            throw Exception("String [$string] should match [$pattern]")
+        if (! (Regex(pattern) matches text)) {
+            throw Exception("String [$text] should match [$pattern]")
         }
     }
 }
@@ -116,8 +116,8 @@ class IdString(string: String) : AdocDSLInline(string) {
 class RoleString(string: String) : AdocDSLInline(string) {
     override fun checkValid() {
         val pattern = "[a-zA-Z_][a-zA-Z0-9_-]*"
-        if (! (Regex(pattern) matches string)) {
-            throw Exception("String [$string] should match [$pattern]")
+        if (! (Regex(pattern) matches text)) {
+            throw Exception("String [$text] should match [$pattern]")
         }
     }
 }
@@ -125,53 +125,53 @@ class RoleString(string: String) : AdocDSLInline(string) {
 class AttrNameString(string: String) : AdocDSLInline(string) {
     override fun checkValid() {
         val pattern = "[a-z_][a-z0-9_-]*"
-        if (! (Regex(pattern) matches string)) {
-            throw Exception("String [$string] should match [$pattern]")
+        if (! (Regex(pattern) matches text)) {
+            throw Exception("String [$text] should match [$pattern]")
         }
     }
 }
 
 class TitleString(string: String) : AdocDSLInline(string) {
     override fun toString(): String {
-        return string
+        return text
     }
 
     override fun checkValid() {
         val pattern = "[^\n]+"
-        if (! (Regex(pattern) matches string)) {
-            throw Exception("String [$string] should match [$pattern]")
+        if (! (Regex(pattern) matches text)) {
+            throw Exception("String [$text] should match [$pattern]")
         }
     }
 }
 
-open class AdocDSLText(string: String) : AdocDSLInline(string) {
+open class AdocDSLText(text: String) : AdocDSLInline(text) {
 
     override fun checkValid() {
         checkHasNoAsciidocMarkup()
     }
 
     private fun checkHasNoAsciidocMarkup() {
-        val xmlRepresentation = DBFactory.parseDocument(AsciidocValidatorFactory.getXML(string))
+        val xmlRepresentation = DBFactory.parseDocument(AsciidocValidatorFactory.getXML(text))
         if (XPFactory.eval("//*[@block = 'true']", xmlRepresentation).length != 2) {
-            throw Exception("String has asciidoc block elements: \n--------\n$string\n--------\n")
+            throw Exception("String has asciidoc block elements: \n--------\n$text\n--------\n")
         }
         if (XPFactory.eval("/embedded/paragraph/*", xmlRepresentation).length != 0) {
-            throw Exception("String has asciidoc inline elements: \n--------\n$string\n--------\n")
+            throw Exception("String has asciidoc inline elements: \n--------\n$text\n--------\n")
         }
     }
 }
 
 class AdocDSLLink(text: String, val url: String) : AdocDSLText(text) {
     override fun toString(): String {
-        return "$url[$string]"
+        return "$url[$text]"
     }
 
     override fun toHabrMd(): String {
-        return "[$string]($url)"
+        return "[$text]($url)"
     }
 
     override fun toText(): String {
-        return string
+        return text
     }
 
     init {
@@ -183,6 +183,20 @@ class AdocDSLLink(text: String, val url: String) : AdocDSLText(text) {
     }
 }
 
+class AdocDSLHTML(text: String) : AdocDSLInline(text) {
+    override fun toString(): String {
+        return "+++$text+++"
+    }
+
+    override fun toHabrMd(): String {
+        return  text
+    }
+
+    override fun toText(): String {
+        return "Pure HTML"
+    }
+
+}
 
 open class AdocDSLInlineContent : ArrayList<AdocDSLInline>() {
     override fun toString(): String {
@@ -244,6 +258,10 @@ open class AdocDSLStructuralNode {
 
     fun link(text: String, url: String): AdocDSLLink {
         return AdocDSLLink(text, url)
+    }
+
+    fun html(text: String): AdocDSLHTML {
+        return AdocDSLHTML(text)
     }
 
     fun id(id: String) {
@@ -504,7 +522,7 @@ class AdocDSLParagraph : AdocDSLStructuralNode() {
         } else if (paraType == ParaType.OtherList) {
             return "${getBlockMetaSyntax()}${inlineContent.toHabrMd()}"
         }
-        return "\n\n${getBlockMetaSyntax()}${inlineContent.toHabrMd()}"
+        return "\n\n${getBlockMetaSyntax()}${inlineContent.toHabrMd()}\n\n<cut/>"
     }
 
     override fun toText(): String {
@@ -522,8 +540,12 @@ class AdocDSLParagraph : AdocDSLStructuralNode() {
         return inlineContent
     }
 
+    operator fun AdocDSLHTML.unaryPlus(): AdocDSLInlineContent {
+        thisPara.inlineContent.add(html(this.text))
+        return inlineContent
+    }
     operator fun AdocDSLLink.unaryPlus(): AdocDSLInlineContent {
-        thisPara.inlineContent.add(link(this.string, this.url))
+        thisPara.inlineContent.add(link(this.text, this.url))
         return inlineContent
     }
 
@@ -534,7 +556,7 @@ class AdocDSLParagraph : AdocDSLStructuralNode() {
     }
 
     operator fun AdocDSLInlineContent.plus(link: AdocDSLLink): AdocDSLInlineContent {
-        thisPara.inlineContent.add(link(link.string, link.url))
+        thisPara.inlineContent.add(link(link.text, link.url))
         return inlineContent
     }
 
