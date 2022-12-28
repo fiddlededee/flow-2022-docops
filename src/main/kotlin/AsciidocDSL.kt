@@ -183,17 +183,17 @@ class AdocDSLLink(text: String, val url: String) : AdocDSLText(text) {
     }
 }
 
-class AdocDSLHTML(text: String) : AdocDSLInline(text) {
+class AdocDSLVideo(text: String) : AdocDSLInline(text) {
     override fun toString(): String {
-        return "+++$text+++"
+        return """Ссылка на видео: $text"""
     }
 
     override fun toHabrMd(): String {
-        return  text
+        return "<video>$text</video>"
     }
 
     override fun toText(): String {
-        return "Pure HTML"
+        return "Link to video: $text"
     }
 
 }
@@ -260,8 +260,8 @@ open class AdocDSLStructuralNode {
         return AdocDSLLink(text, url)
     }
 
-    fun html(text: String): AdocDSLHTML {
-        return AdocDSLHTML(text)
+    fun video(text: String): AdocDSLVideo {
+        return AdocDSLVideo(text)
     }
 
     fun id(id: String) {
@@ -540,8 +540,8 @@ class AdocDSLParagraph : AdocDSLStructuralNode() {
         return inlineContent
     }
 
-    operator fun AdocDSLHTML.unaryPlus(): AdocDSLInlineContent {
-        thisPara.inlineContent.add(html(this.text))
+    operator fun AdocDSLVideo.unaryPlus(): AdocDSLInlineContent {
+        thisPara.inlineContent.add(video(this.text))
         return inlineContent
     }
     operator fun AdocDSLLink.unaryPlus(): AdocDSLInlineContent {
