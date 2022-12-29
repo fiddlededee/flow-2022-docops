@@ -77,7 +77,7 @@ fun main() {
 
         p { + "Были определены технологии, которые потенциально могут обеспечить решение всех указанных проблем." }
 
-        val sphinxNeeds = link("Shinx-needs", "https://github.com/useblocks/sphinx-needs")
+        val sphinxNeeds = link("Sphinx-needs", "https://github.com/useblocks/sphinx-needs")
 
         fun AdocDSLOList.lp(init: AdocDSLParagraph.() -> Unit): AdocDSLListItem {
             return li { p(init) }
