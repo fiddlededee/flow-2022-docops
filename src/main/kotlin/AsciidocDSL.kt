@@ -466,7 +466,7 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
             returnString += "\n:${attr.key}: ${attr.value}"
         }
         if (titleImageURL != null) {
-            returnString += "\n\nimage::${titleImageURL}"
+            returnString += "\n\nimage::${titleImageURL}[]"
         }
         blocks.forEach { block ->
             returnString += block.toString()
