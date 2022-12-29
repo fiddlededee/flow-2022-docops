@@ -450,8 +450,13 @@ class AdocDSLSection : AdocDSLStructuralNode() {
 }
 
 class AdocDSLDocument : AdocDSLStructuralNode() {
+    var titleImageURL : String? = null
     init {
         sectionLevel = 0
+    }
+
+    fun titleImage (url: String) {
+        this.titleImageURL = url
     }
 
     override fun toString(): String {
@@ -459,6 +464,9 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
         returnString += if (title == null) "" else "= $title"
         attrs.forEach { attr ->
             returnString += "\n:${attr.key}: ${attr.value}"
+        }
+        if (titleImageURL != null) {
+            returnString += "\n\nimage::${titleImageURL}"
         }
         blocks.forEach { block ->
             returnString += block.toString()
@@ -468,6 +476,9 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
 
     override fun toHabrMd(): String {
         var returnString = ""
+        if (titleImageURL != null) {
+            returnString += "![]($titleImageURL)"
+        }
         blocks.forEach { block ->
             returnString += block.toHabrMd()
         }
@@ -477,6 +488,9 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
     override fun toText(): String {
         var returnString = ""
         returnString += if (title == null) "" else "$title"
+        if (titleImageURL != null) {
+            returnString += "\n\nTitle image URL: $titleImageURL)"
+        }
         blocks.forEach { block ->
             returnString += block.toText()
         }

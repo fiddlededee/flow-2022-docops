@@ -25,7 +25,10 @@ fun main() {
 
         title("DocOps на Flow 2022")
 
+        titleImage("https://habrastorage.org/webt/zh/nm/-y/zhnm-ybyd4wrl7i6wnxdxnm_ki8.png")
+
         val flowConf = link("FlowConf 2022", "https://flowconf.ru/?utm_source=habr&utm_medium=708338")
+
 
         p { + "29-30 ноября прошла конференция для аналитиков " + flowConf + ". Основная особенность конференции -- ее ориентация на конкретные практические рецепты. Одним из направлений, которое содержит много таких рецептов, стал Docs As Code или, в более широком смысле, DocOps в работе аналитика. В этом посте представляю обзор этого направления." }
 
