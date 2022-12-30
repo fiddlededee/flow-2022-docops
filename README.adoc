@@ -2,13 +2,13 @@
 
 This repository follows the discussion at the round table "DocOps for system analyst" held at https://flowconf.ru/[Flow 2022].
 
-It defines Kotlin DSL Asciidoc wrapper and contains a report on DocOps talks at Flow. The report is written with the help of this wrapper. The report is published at https://habr.com/[Habr]
+It defines Kotlin DSL Asciidoc wrapper and contains a report on DocOps talks at Flow. The report is written with the help of this wrapper. The report is published at https://habr.com/ru/company/jugru/blog/708338/[Habr].
 
 .Outputs formats
 * https://fiddlededee.github.io/flow-2022-docops/flow-docops.html[Html]
 * https://fiddlededee.github.io/flow-2022-docops/flow-docops.pdf[Pdf]
 * https://fiddlededee.github.io/flow-2022-docops/flow-docops.docx[Microsoft Word (docx)]
-* https://fiddlededee.github.io/flow-2022-docops/flow-docops.md[Habr Markdown]
+* https://fiddlededee.github.io/flow-2022-docops/flow-docops.md[Habr Markdown] (published https://habr.com/ru/company/jugru/blog/708338/[here])
 * https://fiddlededee.github.io/flow-2022-docops/flow-docops.txt[Just text]
 
 .Some notes
