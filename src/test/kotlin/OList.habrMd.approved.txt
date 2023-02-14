@@ -6,6 +6,8 @@
 1. Some another paragraph in list
 
 Paragraph out of list
+
+<cut/>
 1. Some paragraph
 
   Second paragraph

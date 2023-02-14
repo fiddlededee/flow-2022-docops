@@ -60,6 +60,28 @@ internal class Para {
     }
 }
 
+internal class UList {
+
+    private val document = markupDocument {
+        title("Title")
+        ul {
+            li {
+                p { + "Some paragraph" }
+                p { + "Some another paragraph" }
+            }
+        }
+    }
+
+    @Test
+    fun asciidoc() {
+        Approvals.verify(document)
+    }
+    @Test
+    fun habrMd() {
+        Approvals.verify(document.toHabrMd())
+    }
+}
+
 internal class OList {
 
     private val document = markupDocument {
