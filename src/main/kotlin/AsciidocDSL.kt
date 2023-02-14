@@ -285,6 +285,13 @@ open class AdocDSLStructuralNode {
         return list
     }
 
+    protected open fun ul(init: AdocDSLUList.() -> Unit): AdocDSLUList {
+        val list = AdocDSLUList()
+        list.apply(init)
+        this.blocks.add(list)
+        return list
+    }
+
     protected open fun section(init: AdocDSLSection.() -> Unit): AdocDSLSection {
         val section = AdocDSLSection()
         section.apply(init)
@@ -336,10 +343,21 @@ open class AdocDSLStructuralNode {
 open class AdocDSLList : AdocDSLStructuralNode() {
     override val type = NodeType.List
     fun li(init: AdocDSLListItem.() -> Unit): AdocDSLListItem {
-        val listItem = AdocDSLListItem()
+        val listItem = AdocDSLListItem(if (this is AdocDSLUList) LIType.u else LIType.o)
         listItem.apply(init)
         this.blocks.add(listItem)
         return listItem
+    }
+}
+
+class AdocDSLUList : AdocDSLList() {
+    override fun toString(): String {
+        var returnString = ""
+        returnString += "\n${getBlockMetaSyntax()}"
+        blocks.forEach { listItem ->
+            returnString += listItem.toString()
+        }
+        return returnString
     }
 }
 
@@ -370,13 +388,13 @@ class AdocDSLOList : AdocDSLList() {
     }
 }
 
-class AdocDSLListItem : AdocDSLStructuralNode() {
+class AdocDSLListItem(val liType: LIType) : AdocDSLStructuralNode() {
     override fun toString(): String {
         var returnString = ""
         blocks.forEachIndexed { index, adocDSLStructuralNode ->
             returnString += if ((index == 0) and (adocDSLStructuralNode.type == NodeType.Para)) {
                 val para = adocDSLStructuralNode as AdocDSLParagraph
-                "\n. $para"
+                "\n${if (liType == LIType.u) "*" else "."} $para"
             } else {
                 "\n+\n$adocDSLStructuralNode"
             }
@@ -389,7 +407,7 @@ class AdocDSLListItem : AdocDSLStructuralNode() {
         blocks.forEachIndexed { index, adocDSLStructuralNode ->
             returnString += if ((index == 0) and (adocDSLStructuralNode.type == NodeType.Para)) {
                 val para = adocDSLStructuralNode as AdocDSLParagraph
-                "\n1. ${para.toHabrMd()}"
+                "\n${if (liType == LIType.u) "*" else "1."} ${para.toHabrMd()}"
             } else if ((index == 1) and (adocDSLStructuralNode.type == NodeType.Para)) {
                 "\n\n  ${adocDSLStructuralNode.toHabrMd()}\n"
             } else {
@@ -422,6 +440,11 @@ class AdocDSLListItem : AdocDSLStructuralNode() {
 
 }
 
+enum class LIType {
+    o, u
+
+}
+
 class AdocDSLSection : AdocDSLStructuralNode() {
     override fun toString(): String {
         var returnString =
@@ -450,12 +473,13 @@ class AdocDSLSection : AdocDSLStructuralNode() {
 }
 
 class AdocDSLDocument : AdocDSLStructuralNode() {
-    var titleImageURL : String? = null
+    var titleImageURL: String? = null
+
     init {
         sectionLevel = 0
     }
 
-    fun titleImage (url: String) {
+    fun titleImage(url: String) {
         this.titleImageURL = url
     }
 
@@ -503,6 +527,10 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
 
     public override fun ol(init: AdocDSLOList.() -> Unit): AdocDSLOList {
         return super.ol(init)
+    }
+
+    public override fun ul(init: AdocDSLUList.() -> Unit): AdocDSLUList {
+        return super.ul(init)
     }
 
     public override fun section(init: AdocDSLSection.() -> Unit): AdocDSLSection {
@@ -558,6 +586,7 @@ class AdocDSLParagraph : AdocDSLStructuralNode() {
         thisPara.inlineContent.add(video(this.text))
         return inlineContent
     }
+
     operator fun AdocDSLLink.unaryPlus(): AdocDSLInlineContent {
         thisPara.inlineContent.add(link(this.text, this.url))
         return inlineContent
