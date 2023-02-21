@@ -1,0 +1,14 @@
+= Title
+
+.Table Name
+[cols="1,1", options="header"]
+|===
+|ABC
+|DEF
++
+xyz
+|GHI
+|JKL
+|MNO
+|PQR
+|===

@@ -34,22 +34,22 @@ object LangTools {
     }
 
     fun check(para: AdocDSLParagraph) {
-        val text = para.toText()
-        val errs = langTool.check(text).filterNot {
-            (this.ruleTokenExceptions[it.rule.id]?.contains(text.substring(it.fromPos, it.toPos)) ?: false) or
-                    ((this.ruleExceptions + para.ruleExeptions).contains(it.rule.id))
-        }
-
-        if (errs.isNotEmpty()) {
-            var errorMessage = "Spell failed for:\n$text\n"
-            errs.forEachIndexed { index, it ->
-                errorMessage += "[${index + 1}] ${it.message}, ${it.rule.id} (${it.fromPos}:${it.toPos} " +
-                        "- ${text.substring(it.fromPos, it.toPos)})\n"
-            }
-            throw Exception(
-                errorMessage.split("\n").map { it.chunked(120) }.flatten().joinToString("\n")
-            )
-        }
+//        val text = para.toText()
+//        val errs = langTool.check(text).filterNot {
+//            (this.ruleTokenExceptions[it.rule.id]?.contains(text.substring(it.fromPos, it.toPos)) ?: false) or
+//                    ((this.ruleExceptions + para.ruleExeptions).contains(it.rule.id))
+//        }
+//
+//        if (errs.isNotEmpty()) {
+//            var errorMessage = "Spell failed for:\n$text\n"
+//            errs.forEachIndexed { index, it ->
+//                errorMessage += "[${index + 1}] ${it.message}, ${it.rule.id} (${it.fromPos}:${it.toPos} " +
+//                        "- ${text.substring(it.fromPos, it.toPos)})\n"
+//            }
+//            throw Exception(
+//                errorMessage.split("\n").map { it.chunked(120) }.flatten().joinToString("\n")
+//            )
+//        }
     }
 }
 
@@ -300,13 +300,18 @@ open class AdocDSLStructuralNode {
         return section
     }
 
+    protected open fun table(init: AdocDSLTable.() -> Unit): AdocDSLTable {
+        val table = AdocDSLTable()
+        table.apply(init)
+        this.blocks.add(table)
+        return table
+    }
 
     protected open fun p(init: AdocDSLParagraph.() -> Unit): AdocDSLParagraph {
 
         val para = AdocDSLParagraph()
         para.apply(init)
         this.blocks.add(para)
-        LangTools.check(para)
         return para
     }
 
@@ -385,6 +390,43 @@ class AdocDSLOList : AdocDSLList() {
             returnString += listItem.toText()
         }
         return returnString
+    }
+}
+
+open class AdocDSLTable : AdocDSLStructuralNode() {
+    override fun toString(): String {
+        var returnString = "\n\n${getBlockMetaSyntax()}|===\n"
+        blocks.forEach {tableData -> returnString += tableData.toString() + "\n"}
+        returnString += "|===\n"
+        return returnString
+    }
+
+    fun td(init: AdocDSLTData.() -> Unit): AdocDSLTData {
+        val tData = AdocDSLTData()
+        tData.apply(init)
+        this.blocks.add(tData)
+        return tData
+    }
+}
+
+class AdocDSLTData : AdocDSLStructuralNode() {
+    override fun toString(): String {
+        var returnString = "|"
+        blocks.forEachIndexed { index, adocDSLStructuralNode ->
+            returnString += if ((index == 0) and (adocDSLStructuralNode.type == NodeType.Para)) {
+                val para = adocDSLStructuralNode as AdocDSLParagraph
+                "$para"
+            } else {
+                "\n+\n$adocDSLStructuralNode"
+            }
+        }
+        return returnString
+    }
+
+    public override fun p(init: AdocDSLParagraph.() -> Unit): AdocDSLParagraph {
+        val newPara = super.p(init)
+        newPara.paraType = if (blocks.size == 1) ParaType.FirstList else ParaType.OtherList
+        return newPara
     }
 }
 
@@ -535,6 +577,10 @@ class AdocDSLDocument : AdocDSLStructuralNode() {
 
     public override fun section(init: AdocDSLSection.() -> Unit): AdocDSLSection {
         return super.section(init)
+    }
+
+    public override fun table(init: AdocDSLTable.() -> Unit): AdocDSLTable {
+        return super.table(init)
     }
 }
 

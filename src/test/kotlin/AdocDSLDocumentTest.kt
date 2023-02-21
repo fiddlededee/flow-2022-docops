@@ -82,6 +82,28 @@ internal class UList {
     }
 }
 
+internal class Table {
+    private val document = markupDocument {
+        title("Title")
+        table {
+            title("Table Name")
+            attr("cols", "1,1")
+            attr("options", "header")
+            td { p { +"ABC" } }
+            td { p { +"DEF" }; p { +"xyz"} }
+            td { p { +"GHI" } }
+            td { p { +"JKL" } }
+            td { p { +"MNO" } }
+            td { p { +"PQR" } }
+        }
+    }
+
+    @Test
+    fun asciidoc() {
+        Approvals.verify(document)
+    }
+}
+
 internal class OList {
 
     private val document = markupDocument {
